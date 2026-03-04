@@ -1,0 +1,13 @@
+vendor
+node_modules
+.env
+.env.backup
+.env.production
+.git
+.gitignore
+README.md
+storage/logs/*
+storage/framework/views/*
+.DS_Store
+npm-debug.log
+composer.lock

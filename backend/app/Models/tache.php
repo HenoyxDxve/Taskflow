@@ -15,6 +15,7 @@ class Tache extends Model
 
     public function assignes()
     {
-        return $this->belongsToMany(Utilisateur::class, 'tache_utilisateur');
+        // pivot column "utilisateur_id" matches model naming
+        return $this->belongsToMany(Utilisateur::class, 'tache_utilisateur', 'tache_id', 'utilisateur_id');
     }
 }

@@ -6,12 +6,12 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class InscriptionRequest extends FormRequest
 {
-    public function autoriser()
+    public function authorize()
     {
         return true;
     }
 
-    public function regles()
+    public function rules()
     {
         return [
             'nom' => 'required|string|max:255',

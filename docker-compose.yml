@@ -1,0 +1,95 @@
+version: '3.8'
+
+services:
+  # Backend - Laravel API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: taskflow-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - APP_ENV=local
+      - APP_KEY=base64:yuNMJw0yRZc5pgnOcy5tXi54U+ybgSlgfemU2XxWrKM=
+      - APP_DEBUG=true
+      - DB_CONNECTION=mysql
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_DATABASE=taskflow_db
+      - DB_USERNAME=taskflow_user
+      - DB_PASSWORD=taskflow_password
+      - JWT_SECRET=4v2jmuHXLs0CwALGYbXUg56RUPf9piY8uDNX7ulOZfMCsNMeLM4KWcik4bhNRkrT
+    volumes:
+      - ./backend:/app
+    command: php artisan serve --host=0.0.0.0
+    depends_on:
+      - mysql
+    networks:
+      - taskflow-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/up"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Frontend - Angular App
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: taskflow-frontend
+    ports:
+      - "4200:4200"
+    volumes:
+      - ./frontend:/app
+    command: ng serve --host=0.0.0.0
+    networks:
+      - taskflow-network
+    environment:
+      - API_URL=http://localhost:8000/api
+
+  # Database - MySQL
+  mysql:
+    image: mysql:8.0
+    container_name: taskflow-mysql
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=taskflow_db
+      - MYSQL_USER=taskflow_user
+      - MYSQL_PASSWORD=taskflow_password
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - taskflow-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # phpMyAdmin - Database Management (Optional)
+  phpmyadmin:
+    image: phpmyadmin
+    container_name: taskflow-phpmyadmin
+    ports:
+      - "8080:80"
+    environment:
+      - PMA_HOST=mysql
+      - PMA_USER=taskflow_user
+      - PMA_PASSWORD=taskflow_password
+    depends_on:
+      - mysql
+    networks:
+      - taskflow-network
+
+volumes:
+  mysql_data:
+    driver: local
+
+networks:
+  taskflow-network:
+    driver: bridge

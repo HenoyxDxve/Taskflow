@@ -31,6 +31,11 @@ class DashboardController extends Controller
                 ->where('statut', 'termine')
                 ->count();
 
+            // nombre de tâches en cours (statut=en_cours)
+            $tachesEnCours = Tache::whereIn('projet_id', $projetIds)
+                ->where('statut', 'en_cours')
+                ->count();
+
             // ✅ Version simplifiée pour "en retard" : tâches non terminées créées il y a +7 jours
             // On utilise whereDate pour éviter les problèmes de format de date
             $tachesEnRetard = Tache::whereIn('projet_id', $projetIds)
@@ -41,6 +46,7 @@ class DashboardController extends Controller
             return response()->json([
                 'total' => (int) $tachesTotales,
                 'terminees' => (int) $tachesTerminees,
+                'en_cours' => (int) $tachesEnCours,
                 'en_retard' => (int) $tachesEnRetard
             ]);
 

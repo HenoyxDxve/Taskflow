@@ -17,6 +17,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/deconnecter', [AuthController::class, 'deconnecter']);
     
     Route::get('/dashboard', [DashboardController::class, 'obtenirResume']);
+    Route::get('/utilisateurs', [AuthController::class, 'lister']);
     
     Route::get('/projets', [ProjetController::class, 'lister']);
     Route::post('/projets', [ProjetController::class, 'creer']);
@@ -26,4 +27,5 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/projets/{projet}/taches', [TacheController::class, 'lister']);
     Route::post('/projets/{projet}/taches', [TacheController::class, 'creer']);
     Route::patch('/taches/{tache}/statut', [TacheController::class, 'mettreAJourStatut']);
+    Route::patch('/taches/{tache}/assignees', [TacheController::class, 'mettreAJourAssignees']);
 });

@@ -101,4 +101,13 @@ class AuthController extends Controller
         JWTAuth::invalidate(JWTAuth::getToken());
         return response()->json(['message' => 'Déconnexion réussie']);
     }
+
+    /**
+     * Lister tous les utilisateurs
+     */
+    public function lister()
+    {
+        $utilisateurs = Utilisateur::select('id', 'nom', 'email')->get();
+        return response()->json(['data' => $utilisateurs]);
+    }
 }

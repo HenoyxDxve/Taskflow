@@ -3,16 +3,19 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Projet extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'nom', 
         'description', 
         'couleur', 
-        'createur_id'  // ← IMPORTANT : doit être dans fillable
+        'createur_id'  
     ];
 
     protected $casts = [

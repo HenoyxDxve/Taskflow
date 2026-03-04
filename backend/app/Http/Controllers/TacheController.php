@@ -11,7 +11,7 @@ class TacheController extends Controller
 {
     public function lister(Request $requete, Projet $projet)
     {
-        $query = $projet->taches();
+        $query = $projet->taches()->with('assignes');
 
         if ($requete->has('statut')) {
             $query->where('statut', $requete->statut);
@@ -46,6 +46,13 @@ class TacheController extends Controller
     {
         $requete->validate(['statut' => 'required|in:a_faire,en_cours,termine']);
         $tache->update(['statut' => $requete->statut]);
-        return new TacheResource($tache);
+        return new TacheResource($tache->load('assignes'));
+    }
+
+    public function mettreAJourAssignees(Request $requete, Tache $tache)
+    {
+        $requete->validate(['assigne_ids' => 'required|array|exists:users,id']);
+        $tache->assignes()->sync($requete->assigne_ids);
+        return new TacheResource($tache->load('assignes'));
     }
 }
