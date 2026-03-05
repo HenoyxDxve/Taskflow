@@ -103,11 +103,23 @@ frontend/
 ### Prérequis
 - **Backend** : PHP 8.2+, MySQL/PostgreSQL, Composer
 - **Frontend** : Node.js 18+, npm 10+
+- **Docker** (optionnel pour déploiement)
 - **Git** pour la gestion de version
+
+### 🔧 Étape 0 : Cloner le projet avec les submodules
+
+```bash
+# Cloner le projet avec tous les submodules (frontend)
+git clone --recursive https://github.com/HenoyxDxve/Taskflow.git
+cd taskflow
+
+# Si vous avez oublié le --recursive, exécutez:
+git submodule update --init --recursive
+```
 
 ### Backend Setup
 
-#### 1. Cloner et installer les dépendances
+#### 1. Installer les dépendances PHP
 ```bash
 cd backend
 composer install
@@ -121,7 +133,7 @@ php artisan jwt:secret
 ```
 
 #### 3. Configurer la base de données
-Edit `.env`:
+Modifiez le fichier `.env` :
 ```env
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
@@ -134,9 +146,11 @@ DB_PASSWORD=
 #### 4. Exécuter les migrations
 ```bash
 php artisan migrate
+# Optionnel: Charger les données de test
+php artisan migrate:fresh --seed
 ```
 
-#### 5. Démarrer le serveur
+#### 5. Démarrer le serveur backend
 ```bash
 # Mode développement avec rechargement auto
 php artisan serve
@@ -146,17 +160,14 @@ php artisan serve
 
 ### Frontend Setup
 
-#### 1. Installer les dépendances
+#### 1. Installer les dépendances Node.js
 ```bash
-cd frontend
+cd ../frontend
 npm install
 ```
 
-#### 2. Configurer l'API
-Edit `src/main.ts`:
-```typescript
-// L'API URL est déjà configurée à http://localhost:8000/api
-```
+#### 2. Configurer l'environnement (optionnel)
+L'API URL est automatiquement configurée à `http://localhost:8000/api` dans les fichiers d'environnement.
 
 #### 3. Démarrer le serveur de développement
 ```bash
@@ -165,6 +176,18 @@ ng serve
 npm start
 
 # Sera accessible à http://localhost:4200
+```
+
+### 🐳 Démarrage avec Docker Compose
+
+Pour un démarrage simplifié, utilisez Docker Compose :
+
+```bash
+# Depuis la racine du projet
+docker-compose up -d
+
+# Le frontend sera accessible à http://localhost:4200
+# L'API backend à http://localhost:8000
 ```
 
 ---
