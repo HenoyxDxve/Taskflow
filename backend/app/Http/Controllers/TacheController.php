@@ -55,4 +55,32 @@ class TacheController extends Controller
         $tache->assignes()->sync($requete->assigne_ids);
         return new TacheResource($tache->load('assignes'));
     }
+
+    public function mettreAJour(Request $requete, Tache $tache)
+    {
+        $requete->validate([
+            'titre' => 'nullable|string|max:255',
+            'description' => 'nullable|string|max:1000',
+            'statut' => 'nullable|in:a_faire,en_cours,termine',
+            'priorite' => 'nullable|in:basse,moyenne,haute',
+            'assigne_ids' => 'nullable|array|exists:users,id',
+        ]);
+
+        $data = $requete->except('assigne_ids');
+        if (!empty($data)) {
+            $tache->update($data);
+        }
+        
+        if ($requete->has('assigne_ids')) {
+            $tache->assignes()->sync($requete->assigne_ids);
+        }
+
+        return new TacheResource($tache->load('assignes'));
+    }
+
+    public function supprimer(Tache $tache)
+    {
+        $tache->delete();
+        return response()->json(['message' => 'Tâche supprimée avec succès'], 204);
+    }
 }

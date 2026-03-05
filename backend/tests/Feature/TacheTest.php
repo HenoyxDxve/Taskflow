@@ -98,7 +98,49 @@ class TacheTest extends TestCase
 
         $response->assertStatus(201);
         $this->assertDatabaseHas('tache_utilisateur', [
+            'tache_id' => $response['data']['id'],
             'utilisateur_id' => $autre_utilisateur->id
         ]);
+    }
+
+    public function test_utilisateur_peut_modifier_une_tache()
+    {
+        $tache = $this->projet->taches()->create([
+            'titre' => 'Tâche Originale',
+            'description' => 'Description originale',
+            'priorite' => 'moyenne'
+        ]);
+
+        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
+            ->putJson("/api/taches/{$tache->id}", [
+                'titre' => 'Tâche Modifiée',
+                'description' => 'Description modifiée',
+                'priorite' => 'haute'
+            ]);
+
+        $response->assertStatus(200);
+        $response->assertJsonPath('data.titre', 'Tâche Modifiée');
+        $response->assertJsonPath('data.description', 'Description modifiée');
+        $response->assertJsonPath('data.priorite', 'haute');
+        $this->assertDatabaseHas('taches', [
+            'id' => $tache->id,
+            'titre' => 'Tâche Modifiée',
+            'description' => 'Description modifiée',
+            'priorite' => 'haute'
+        ]);
+    }
+
+    public function test_utilisateur_peut_supprimer_une_tache()
+    {
+        $tache = $this->projet->taches()->create([
+            'titre' => 'Tâche à Supprimer',
+            'priorite' => 'basse'
+        ]);
+
+        $response = $this->withHeaders(['Authorization' => 'Bearer ' . $this->token])
+            ->deleteJson("/api/taches/{$tache->id}");
+
+        $response->assertStatus(204);
+        $this->assertDatabaseMissing('taches', ['id' => $tache->id]);
     }
 }

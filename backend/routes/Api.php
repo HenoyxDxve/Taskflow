@@ -28,4 +28,6 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/projets/{projet}/taches', [TacheController::class, 'creer']);
     Route::patch('/taches/{tache}/statut', [TacheController::class, 'mettreAJourStatut']);
     Route::patch('/taches/{tache}/assignees', [TacheController::class, 'mettreAJourAssignees']);
+    Route::put('/taches/{tache}', [TacheController::class, 'mettreAJour']);
+    Route::delete('/taches/{tache}', [TacheController::class, 'supprimer']);
 });

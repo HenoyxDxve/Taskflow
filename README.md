@@ -216,8 +216,8 @@ POST /api/inscrire
 Content-Type: application/json
 
 {
-  "nom": "Jean Dupont",
-  "email": "jean@example.com",
+  "nom": "Ble gayé",
+  "email": "ble@example.com",
   "mot_de_passe": "password123",
   "mot_de_passe_confirmation": "password123"
 }
@@ -227,7 +227,7 @@ Content-Type: application/json
 ```http
 POST /api/connecter
 {
-  "email": "jean@example.com",
+  "email": "ble@example.com",
   "mot_de_passe": "password123"
 }
 
